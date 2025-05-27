@@ -13,7 +13,27 @@ export const routes = [
       {
         name: "Home",
         path: "home",
-        component: () => import("@/views/home"),
+        component: () => import("@/views/home.tsx"),
+      },
+      {
+        name: "Dashboard",
+        path: "dashboard",
+        component: () => import("@/views/dashboard"),
+      },
+      {
+        name: "Cache",
+        path: "cache",
+        component: () => import("@/views/cache"),
+      },
+      {
+        name: "Duplicate",
+        path: "duplicate",
+        component: () => import("@/views/duplicate"),
+      },
+      {
+        name: "BigFile",
+        path: "bigFile",
+        component: () => import("@/views/big"),
       }
     ],
   },

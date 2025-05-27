@@ -48,8 +48,8 @@ func main() {
 	// 'URL' is the URL that will be loaded into the webview.
 	app.NewWebviewWindowWithOptions(application.WebviewWindowOptions{
 		Title:  "MacClean",
-		Width:  1050,
-		Height: 850,
+		Width:  950,
+		Height: 680,
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
 			Backdrop:                application.MacBackdropTranslucent,
