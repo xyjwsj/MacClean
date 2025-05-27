@@ -2,7 +2,7 @@ import {defineComponent} from 'vue';
 import styled from "vue3-styled-components";
 
 export default defineComponent({
-    name: 'Cache',
+    name: 'Process',
     setup() {
         const Container = styled.div`
             width: 100%;
@@ -15,7 +15,7 @@ export default defineComponent({
         `
 
         return () => (
-            <Container>缓存</Container>
+            <Container>fadsfa</Container>
         )
     }
 })

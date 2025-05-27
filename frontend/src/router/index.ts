@@ -3,7 +3,7 @@ import {createRouter, createWebHashHistory} from "vue-router";
 export const routes = [
   {
     path: "/",
-    redirect: "/layout/home",
+    redirect: "/layout/dashboard",
   },
   {
     name: "Layout",
@@ -29,6 +29,16 @@ export const routes = [
         name: "Duplicate",
         path: "duplicate",
         component: () => import("@/views/duplicate"),
+      },
+      {
+        name: "Application",
+        path: "application",
+        component: () => import("@/views/application"),
+      },
+      {
+        name: "Process",
+        path: "process",
+        component: () => import("@/views/process"),
       },
       {
         name: "BigFile",

@@ -2,8 +2,9 @@ import {defineComponent} from 'vue';
 import styled from "vue3-styled-components";
 
 export default defineComponent({
-    name: 'Cache',
+    name: 'Application',
     setup() {
+
         const Container = styled.div`
             width: 100%;
             height: 100%;
@@ -15,7 +16,7 @@ export default defineComponent({
         `
 
         return () => (
-            <Container>缓存</Container>
+            <Container>应用</Container>
         )
     }
 })

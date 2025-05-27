@@ -1,5 +1,6 @@
 import {defineComponent, reactive, ref} from 'vue';
 import styled from "vue3-styled-components";
+import {TipWarning} from "@/util/messageUtil.ts";
 
 export default defineComponent({
     name: 'Dashboard',
@@ -39,33 +40,6 @@ export default defineComponent({
                         flex-grow: 1;
                         transition: flex-grow 0.5s;
                     }
-                }
-
-                .an-item-title {
-                    width: 80px;
-                    height: 20px;
-                    background-color: rosybrown;
-                }
-
-                .an-item-des {
-                    width: 180px;
-                    height: 30px;
-                    background-color: salmon;
-                    margin-top: 30px;
-                    margin-bottom: 40px;
-                }
-
-                .an-item-content {
-                    width: 260px;
-                    height: 50px;
-                    background-color: sandybrown;
-                }
-
-                .an-item-detail {
-                    transition: all .5s;
-                    position: absolute;
-                    top: 250px;
-                    opacity: 0;
                 }
             }
 
@@ -189,6 +163,7 @@ export default defineComponent({
             if (!change && !current) {
                 cardData[0].flexGrow = 4
                 cardData[0].data[0].flexGrow = 4
+                change = true
             }
             return change
         }
@@ -213,8 +188,17 @@ export default defineComponent({
                     })}
                 </div>
                 <div class={['start', scan.value ? 'startAnimation' : '']} onClick={() => {
+                    if (scan.value) {
+                        TipWarning('正在扫描中，请稍后')
+                        return
+                    }
                     scan.value = next()
-                    console.log('xxxxxx', scan.value)
+                    const timer = setInterval( () => {
+                        scan.value = next()
+                        if (!scan.value) {
+                            clearInterval(timer)
+                        }
+                    }, 5000);
                 }}>{'扫描'}</div>
             </Container>
         )

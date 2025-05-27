@@ -16,7 +16,7 @@ export default defineComponent({
         `
 
         return () => (
-            <Container>fadsfa</Container>
+            <Container>大文件</Container>
         )
     }
 })

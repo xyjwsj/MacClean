@@ -2,6 +2,8 @@ import dashboardImg from "@/assets/png/dashboard.png";
 import duplicateImg from "@/assets/png/duplicate.png";
 import bigFileImg from "@/assets/png/bigFile.png";
 import cacheImg from "@/assets/png/cache.png";
+import processImg from "@/assets/png/process.png";
+import applicationImg from "@/assets/png/application.png";
 import {Button, Image} from "ant-design-vue";
 import {defineComponent, KeepAlive, ref, Transition} from "vue";
 import {RouterView} from "vue-router";
@@ -38,11 +40,12 @@ export default defineComponent({
                 opacity: 0.5;
                 display: flex;
                 align-items: center;
+                justify-content: center;
                 
                 &:hover {
                     transform: scale(1.2);
                     filter: none;
-                    opacity: 0.9;
+                    opacity: 0.7;
                 }
                 .btnImg {
                     //background-color: white;
@@ -122,6 +125,20 @@ export default defineComponent({
                 router: "Cache"
             },
             {
+                key: "application",
+                width: 45,
+                img: applicationImg,
+                description: "应用",
+                router: "Application"
+            },
+            {
+                key: "process",
+                width: 30,
+                img: processImg,
+                description: "进程",
+                router: "Process"
+            },
+            {
                 key: "bigFile",
                 width: 30,
                 img: bigFileImg,
@@ -137,7 +154,7 @@ export default defineComponent({
             }
         ]
         
-        const menuSelect = ref("")
+        const menuSelect = ref("dashboard")
         const selectDesc = () => {
             const filter = menuItem.filter(item => item.key===menuSelect.value);
             if (filter.length) {
@@ -156,7 +173,9 @@ export default defineComponent({
                             icon={<Image src={item.img} preview={false} width={item.width}/>}
                             onClick={() => {
                                 menuSelect.value = item.key
-                                router.replace({name: item.router})
+                                if (item.router !== "") {
+                                    router.replace({name: item.router})
+                                }
                             }}
                         ></Button>
                     })}

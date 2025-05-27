@@ -15,7 +15,7 @@ export default defineComponent({
         `
 
         return () => (
-            <Container>fadsfa</Container>
+            <Container>重复文件</Container>
         )
     }
 })
