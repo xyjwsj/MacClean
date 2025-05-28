@@ -65,8 +65,9 @@ export default defineComponent({
       width: calc(100% - 80px);
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
+      gap: 5px;
 
       ::-webkit-scrollbar {
         display: none;
@@ -82,11 +83,12 @@ export default defineComponent({
       }
 
       .body {
-        height: calc(100% - 120px);
+        height: calc(100% - 160px);
         width: 100%;
       }
 
       .start {
+        margin-top: 20px;
         width: 60px;
         height: 60px;
         border-radius: 30px;
