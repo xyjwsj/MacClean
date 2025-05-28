@@ -1,5 +1,12 @@
 import { defineComponent, reactive } from "vue";
 import styled from "vue3-styled-components";
+import RotateImage from "@/components/rotateImage.tsx";
+import duplicate3dIcon from "@/assets/png/duplicate-3d.png";
+import cache3dIcon from "@/assets/png/cache-3d.png";
+import bigfile3dIcon from "@/assets/png/bigfile-3d.png";
+import process3dIcon from "@/assets/png/process-3d.png";
+import appstore3dIcon from "@/assets/png/appstore-3d.png";
+
 
 export default defineComponent({
   name: "Dashboard",
@@ -31,13 +38,37 @@ export default defineComponent({
 
           .an-item {
             height: 100%;
-            padding-top: 60px;
-            padding-left: 60px;
+            padding: 20px;
             border-radius: 20px;
             /* 玻璃核心样式 */
             background: rgba(255, 255, 255, 0.1);
             flex-grow: 1;
             transition: flex-grow 0.5s;
+            
+            .title {
+              color: #FAFAFA;
+              width: 100%;
+              height: 20%;
+              line-height: 20%;
+            }
+            
+            .body {
+              color: white;
+              font-size: 29px;
+              width: 100%;
+              font-weight: 700;
+              height: 60%;
+              line-height: 50%;
+              background-color: red;
+              padding-left: 10px;
+            }
+            .footer {
+              width: 100%;
+              height: 30%;
+              color: white;
+              padding-left: 10px;
+              background-color: green;
+            }
           }
         }
       }
@@ -114,14 +145,20 @@ export default defineComponent({
           {
             key: "1-1",
             flexGrow: 1,
+            title: '缓存',
+            icon: cache3dIcon,
           },
           {
             key: "1-2",
             flexGrow: 1,
+            title: '进程',
+            icon: process3dIcon,
           },
           {
             key: "1-3",
             flexGrow: 1,
+            title: '应用',
+            icon: appstore3dIcon
           },
         ],
       },
@@ -132,10 +169,14 @@ export default defineComponent({
           {
             key: "2-1",
             flexGrow: 1,
+            title: '大文件',
+            icon: bigfile3dIcon
           },
           {
             key: "2-2",
             flexGrow: 1,
+            title: '重复文件',
+            icon: duplicate3dIcon
           },
         ],
       },
@@ -181,11 +222,10 @@ export default defineComponent({
                 {row.data.map((col) => {
                   return (
                     <div class="an-item" style={{ flexGrow: col.flexGrow }}>
-                      <div class="an-item-detail">
-                        <div class="an-item-title"></div>
-                        <div class="an-item-des"></div>
-                        <div class="an-item-content"></div>
-                      </div>
+                      <div class={'title'}>{col.title}</div>
+                      <div class={'body'}>{'测试'}</div>
+                      <div class={'footer'}>{'可清除'}</div>
+                      <RotateImage icon={col.icon} animation={false}></RotateImage>
                     </div>
                   );
                 })}

@@ -194,18 +194,18 @@ export default defineComponent({
         router: "Cache",
       },
       {
-        key: "application",
-        width: 45,
-        img: applicationImg,
-        description: "应用",
-        router: "Application",
-      },
-      {
         key: "process",
         width: 30,
         img: processImg,
         description: "进程",
         router: "Process",
+      },
+      {
+        key: "application",
+        width: 45,
+        img: applicationImg,
+        description: "应用",
+        router: "Application",
       },
       {
         key: "bigFile",
