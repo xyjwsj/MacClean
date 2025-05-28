@@ -1,5 +1,12 @@
 import { Image } from "ant-design-vue";
-import {defineComponent, onBeforeUnmount, onMounted, reactive, ref, watch} from "vue";
+import {
+  defineComponent,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
 import styled from "vue3-styled-components";
 
 export default defineComponent({
@@ -12,43 +19,45 @@ export default defineComponent({
     animation: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     auto: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     width: {
       type: Number,
       required: false,
-      default: 350
-    }
+      default: 350,
+    },
   },
   setup(props) {
     const Container = styled.div`
       height: ${() => `${props.width}px`};
       width: ${() => `${props.width}px`};
       .imageCard {
-        border-radius: 55px;
+        border-radius: 50px;
         height: ${() => `${props.width}px`};
-        display: flex;
+        /* display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: center; */
         background-size: 100% 100%;
         background-repeat: no-repeat;
         background: transparent !important;
+        padding: 0;
         //box-shadow: rgba(rgb(0, 0, 0), 0.6) 0 30px 60px 0, inset #333 0 0 0 5px,
         //  inset rgba(rgb(255, 255, 255), 0.5) 0 0 0 6px;
         box-shadow: 0 0 50px 60px rgba(255, 255, 255, 0.1);
-        
+        .ant-image {
+          position: static;
+        }
         //transition-duration: 80ms;
         .img {
           box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0.1);
-          border-radius: 55px;
+          border-radius: 25px;
           opacity: 0.8;
           background-size: cover;
-          
         }
       }
     `;
@@ -72,7 +81,7 @@ export default defineComponent({
 
     const handleMouseMove = (e: any) => {
       if (!props.animation) {
-        return false
+        return false;
       }
       position.x = e.offsetX;
       position.y = e.offsetY;
@@ -84,21 +93,21 @@ export default defineComponent({
 
     const handleMouseLeave = (_: any) => {
       if (!props.animation) {
-        return false
+        return false;
       }
     };
 
     watch(
-        () => props.auto,
-        (newVal, oldVal) => {
-          console.log('监听基本类型数据testStr')
-          console.log('new', newVal)
-          console.log('old', oldVal)
-          if (newVal) {
-            autoRotate()
-          }
+      () => props.auto,
+      (newVal, oldVal) => {
+        console.log("监听基本类型数据testStr");
+        console.log("new", newVal);
+        console.log("old", oldVal);
+        if (newVal) {
+          autoRotate();
         }
-    )
+      }
+    );
 
     onMounted(() => {
       if (props.auto) {
@@ -120,7 +129,12 @@ export default defineComponent({
           onMousemove={handleMouseMove}
           ref={cardRef}
         >
-          <Image class={'img'} src={props.icon} preview={false} width={props.width}></Image>
+          <Image
+            class={"img"}
+            src={props.icon}
+            preview={false}
+            width={props.width}
+          ></Image>
         </div>
       </Container>
     );

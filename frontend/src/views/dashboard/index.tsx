@@ -1,12 +1,11 @@
+import appstore3dIcon from "@/assets/png/appstore-3d.png";
+import bigfile3dIcon from "@/assets/png/bigfile-3d.png";
+import cache3dIcon from "@/assets/png/cache-3d.png";
+import duplicate3dIcon from "@/assets/png/duplicate-3d.png";
+import process3dIcon from "@/assets/png/process-3d.png";
+import RotateImage from "@/components/rotateImage.tsx";
 import { defineComponent, reactive } from "vue";
 import styled from "vue3-styled-components";
-import RotateImage from "@/components/rotateImage.tsx";
-import duplicate3dIcon from "@/assets/png/duplicate-3d.png";
-import cache3dIcon from "@/assets/png/cache-3d.png";
-import bigfile3dIcon from "@/assets/png/bigfile-3d.png";
-import process3dIcon from "@/assets/png/process-3d.png";
-import appstore3dIcon from "@/assets/png/appstore-3d.png";
-
 
 export default defineComponent({
   name: "Dashboard",
@@ -39,35 +38,53 @@ export default defineComponent({
           .an-item {
             height: 100%;
             padding: 20px;
-            border-radius: 20px;
+            border-radius: 30px;
             /* 玻璃核心样式 */
             background: rgba(255, 255, 255, 0.1);
             flex-grow: 1;
             transition: flex-grow 0.5s;
-            
+            position: relative;
+            overflow: hidden;
+
+            .img {
+              margin: 0 auto;
+              z-index: -2;
+              /* border-radius: 55px; */
+            }
+
             .title {
-              color: #FAFAFA;
+              color: #fafafa;
               width: 100%;
               height: 20%;
               line-height: 20%;
+              /* background-color: yellow; */
             }
-            
+
+            .runTip {
+              width: 100%;
+              line-height: 40px;
+              color: wheat;
+              text-align: center;
+              padding-top: 20px;
+            }
+
             .body {
               color: white;
               font-size: 29px;
               width: 100%;
               font-weight: 700;
-              height: 60%;
-              line-height: 50%;
-              background-color: red;
+              height: 30%;
+              line-height: 30%;
+              /* background-color: red; */
               padding-left: 10px;
+              padding-top: 20px;
             }
             .footer {
               width: 100%;
-              height: 30%;
+              height: 10%;
               color: white;
               padding-left: 10px;
-              background-color: green;
+              /* background-color: green; */
             }
           }
         }
@@ -145,20 +162,23 @@ export default defineComponent({
           {
             key: "1-1",
             flexGrow: 1,
-            title: '缓存',
+            title: "缓存",
             icon: cache3dIcon,
+            finsish: false,
           },
           {
             key: "1-2",
             flexGrow: 1,
-            title: '进程',
+            title: "进程",
             icon: process3dIcon,
+            finsish: false,
           },
           {
             key: "1-3",
             flexGrow: 1,
-            title: '应用',
-            icon: appstore3dIcon
+            title: "应用",
+            icon: appstore3dIcon,
+            finsish: false,
           },
         ],
       },
@@ -169,14 +189,16 @@ export default defineComponent({
           {
             key: "2-1",
             flexGrow: 1,
-            title: '大文件',
-            icon: bigfile3dIcon
+            title: "大文件",
+            icon: bigfile3dIcon,
+            finsish: false,
           },
           {
             key: "2-2",
             flexGrow: 1,
-            title: '重复文件',
-            icon: duplicate3dIcon
+            title: "重复文件",
+            icon: duplicate3dIcon,
+            finsish: false,
           },
         ],
       },
@@ -189,6 +211,7 @@ export default defineComponent({
         item.data.forEach((itm, col) => {
           if (itm.flexGrow > 1) {
             itm.flexGrow = 1;
+            itm.finsish = true;
             if (col === item.data.length - 1) {
               item.flexGrow = 1;
             }
@@ -200,6 +223,7 @@ export default defineComponent({
             itm.flexGrow = 4;
             change = true;
             current = false;
+            scan.status = true;
           }
         });
       });
@@ -207,11 +231,21 @@ export default defineComponent({
         cardData[0].flexGrow = 4;
         cardData[0].data[0].flexGrow = 4;
         change = true;
+        scan.status = true;
+      }
+      if (!change) {
+        scan.status = false;
+        scan.num++;
       }
       return change;
     };
 
     expose({ executeAction });
+
+    const scan = reactive({
+      status: false,
+      num: 0,
+    });
 
     return () => (
       <Container>
@@ -222,10 +256,17 @@ export default defineComponent({
                 {row.data.map((col) => {
                   return (
                     <div class="an-item" style={{ flexGrow: col.flexGrow }}>
-                      <div class={'title'}>{col.title}</div>
-                      <div class={'body'}>{'测试'}</div>
-                      <div class={'footer'}>{'可清除'}</div>
-                      <RotateImage icon={col.icon} animation={false}></RotateImage>
+                      <div class={"title"}>{col.title}</div>
+                      <RotateImage
+                        class={["img"]}
+                        icon={col.icon}
+                        animation={false}
+                        auto={col.flexGrow > 1}
+                        width={col.flexGrow > 1 ? 150 : 80}
+                      ></RotateImage>
+                      {col.flexGrow > 1 && <div class={"runTip"}>{"测试"}</div>}
+                      {col.finsish && <div class={"body"}>{"无结果"}</div>}
+                      {col.finsish && <div class={"footer"}>{"可清除"}</div>}
                     </div>
                   );
                 })}
