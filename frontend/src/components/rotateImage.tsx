@@ -55,7 +55,7 @@ export default defineComponent({
         //transition-duration: 80ms;
         .img {
           box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0.1);
-          border-radius: 25px;
+          border-radius: 50px;
           opacity: 0.8;
           background-size: cover;
         }
