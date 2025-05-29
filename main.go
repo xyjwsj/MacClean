@@ -1,6 +1,8 @@
 package main
 
 import (
+	"changeme/handler"
+	"changeme/model"
 	"embed"
 	_ "embed"
 	"log"
@@ -31,7 +33,7 @@ func main() {
 		Name:        "MacClean",
 		Description: "A demo of using raw HTML & CSS",
 		Services: []application.Service{
-			application.NewService(&GreetService{}),
+			application.NewService(&handler.ScanHandler{}),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),
@@ -68,6 +70,8 @@ func main() {
 			time.Sleep(time.Second)
 		}
 	}()
+
+	model.UpdateApp(app)
 
 	// Run the application. This blocks until the application has been exited.
 	err := app.Run()

@@ -3,8 +3,11 @@ import bigfile3dIcon from "@/assets/png/bigfile-3d.png";
 import cache3dIcon from "@/assets/png/cache-3d.png";
 import duplicate3dIcon from "@/assets/png/duplicate-3d.png";
 import process3dIcon from "@/assets/png/process-3d.png";
-import {defineComponent, reactive} from "vue";
+import {defineComponent, onUnmounted, reactive} from "vue";
 import styled from "vue3-styled-components";
+import {Scan} from "@/bindings/changeme/handler/scanhandler.ts";
+import {TipSuccess} from "@/util/messageUtil.ts";
+import {Events} from "@wailsio/runtime";
 
 export default defineComponent({
     name: "Dashboard",
@@ -47,35 +50,92 @@ export default defineComponent({
                         display: flex;
                         flex-direction: column;
                         justify-content: space-between;
-                        
+
+                        .rotate {
+                            width: 100%;
+                            height: 100%;
+                            position: absolute;
+                            background: transparent;
+                            top: 0;
+                            left: 0;
+                            opacity: 0.1;
+                            transition: all 1s;
+                            z-index: -1;
+                        }
+
+                        .startRotate {
+                            &:after {
+                                content: "";
+                                display: block;
+                                width: 300%;
+                                height: 300%;
+                                position: absolute;
+                                z-index: -2;
+                                top: -100%;
+                                left: -100%;
+                                background: conic-gradient(
+                                        rgba(212, 214, 240, 0.5),
+                                        rgba(212, 214, 240, 0.9)
+                                );
+                                transform-origin: center center;
+                                animation: loader 3s linear infinite;
+                            }
+                        }
+
                         .title {
                             color: #fafafa;
                             width: 100%;
-                            height: 30%;
-                            line-height: 30%;
+                            height: 20%;
+                            line-height: 20%;
                             /* background-color: yellow; */
                         }
 
                         .runTip {
                             width: 100%;
-                            line-height: 40px;
+                            height: 80%;
                             color: wheat;
                             text-align: center;
-                            padding-top: 20px;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: flex-end;
+                            align-items: center;
+                            transition: all 1s;
+
+                            .title {
+                                width: 100%;
+                                height: 100px;
+                                line-height: 100px;
+                                font-size: 32px;
+                            }
+
+                            .content {
+                                //width: 100%;
+                                height: 50px;
+                                font-size: 19px;
+                                line-height: 50px;
+                            }
+
+                            .desc {
+                                //width: 100%;
+                                height: 35px;
+                                font-size: 15px;
+                                color: lightgray;
+                                line-height: 35px;
+                            }
                         }
-                        
+
                         .content {
                             display: flex;
                             height: 70%;
                             flex-direction: column;
                             justify-content: flex-end;
-                            //align-content: flex-end;
+
                             .body {
                                 color: white;
                                 font-size: 32px;
                                 width: 100%;
                                 font-weight: 700;
-                                height: 60%;
+                                height: 60px;
                                 /* background-color: red; */
                             }
 
@@ -172,25 +232,25 @@ export default defineComponent({
 
         const cardData = reactive([
             {
-                key: "1",
+                key: "row1",
                 flexGrow: 1,
                 data: [
                     {
-                        key: "1-1",
+                        key: "cache",
                         flexGrow: 1,
                         title: "缓存",
                         icon: cache3dIcon,
-                        finish: true,
+                        finish: false,
                     },
                     {
-                        key: "1-2",
+                        key: "process",
                         flexGrow: 1,
                         title: "进程",
                         icon: process3dIcon,
                         finish: false,
                     },
                     {
-                        key: "1-3",
+                        key: "application",
                         flexGrow: 1,
                         title: "应用",
                         icon: appstore3dIcon,
@@ -199,18 +259,18 @@ export default defineComponent({
                 ],
             },
             {
-                key: "2",
+                key: "row2",
                 flexGrow: 1,
                 data: [
                     {
-                        key: "2-1",
+                        key: "bigFile",
                         flexGrow: 1,
                         title: "大文件",
                         icon: bigfile3dIcon,
                         finish: false,
                     },
                     {
-                        key: "2-2",
+                        key: "duplicate",
                         flexGrow: 1,
                         title: "重复文件",
                         icon: duplicate3dIcon,
@@ -220,48 +280,73 @@ export default defineComponent({
             },
         ]);
 
-        const executeAction = () => {
-            let current = false;
-            let change = false;
+        const items = [
+            "cache",
+            "process",
+            "application",
+            "bigFile",
+            "duplicate",
+        ]
+
+        const start = async () => {
+            scan.status = true
+            scan.finish = false
+            startScan(1)
+            for (let idx = 0; idx < items.length; idx++) {
+                startScan(idx)
+                let item = items[idx];
+                const result = await Scan(item)
+                console.log(item, idx, result)
+            }
+            startScan(items.length)
+            scan.status = false
+            scan.finish = true
+        }
+
+        const startScan = (idx: number) => {
+            const oldIdx = idx - 1;
+            const newIdx = idx;
+            const oldKey = oldIdx < 0 ? "" : items[oldIdx]
+            const newKey = newIdx > items.length - 1 ? "" : items[newIdx]
             cardData.forEach((item) => {
-                item.data.forEach((itm, col) => {
-                    if (itm.flexGrow > 1) {
-                        itm.flexGrow = 1;
-                        itm.finish = true;
-                        if (col === item.data.length - 1) {
-                            item.flexGrow = 1;
-                        }
-                        current = true;
-                        return;
+                item.data.forEach((itm) => {
+                    if (itm.key === newKey) {
+                        itm.flexGrow = 4
+                    } else if (itm.key === oldKey) {
+                        itm.flexGrow = 1
+                        itm.finish = true
+                    } else {
+                        itm.flexGrow = 1
                     }
-                    if (current) {
-                        item.flexGrow = 4;
-                        itm.flexGrow = 4;
-                        change = true;
-                        current = false;
-                        scan.status = true;
-                    }
-                });
-            });
-            if (!change && !current) {
-                cardData[0].flexGrow = 4;
-                cardData[0].data[0].flexGrow = 4;
-                change = true;
-                scan.status = true;
+                })
+            })
+        }
+
+
+        const executeAction = async () => {
+            if (!scan.status && !scan.finish) {
+                Events.On("go-event", (data: any) => {
+                    console.log("收到数据:", data);
+                    TipSuccess("后端数据" + JSON.stringify(data));
+                })
+                await start()
+                return scan.status
             }
-            if (!change) {
-                scan.status = false;
-                scan.num++;
-            }
-            return change;
+            return scan.status
         };
+
+        onUnmounted(() => {
+            (window as any).runtime.EventsOff('go-event')
+        })
 
         expose({executeAction});
 
         const scan = reactive({
             status: false,
-            num: 0,
+            finish: false,
         });
+
+
 
         return () => (
             <Container>
@@ -275,14 +360,19 @@ export default defineComponent({
                                             flexGrow: col.flexGrow
                                         }}>
                                             {//@ts-ignore
-                                                <BkImg icon={col.icon} ></BkImg>
+                                                <BkImg icon={col.icon}></BkImg>
                                             }
+                                            <div class={['rotate', col.flexGrow > 1 ? "startRotate" : '']}></div>
                                             <div class={"title"}>{col.title}</div>
-                                            {col.flexGrow > 1 && <div class={"runTip"}>{"测试"}</div>}
-                                            <div class={'content'}>
+                                            {col.flexGrow > 1 && <div class={"runTip"}>
+                                                <div class={'title'}>{'TITLE'}</div>
+                                                <div class={'content'}>{'CONTENT'}</div>
+                                                <div class={'desc'}>{'DESC'}</div>
+                                            </div>}
+                                            {col.finish && <div class={'content'}>
                                                 {col.finish && <div class={"body"}>{"无结果"}</div>}
                                                 {col.finish && <div class={"footer"}>{"可清除"}</div>}
-                                            </div>
+                                            </div>}
                                         </div>
                                     );
                                 })}
