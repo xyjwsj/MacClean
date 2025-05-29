@@ -7,7 +7,7 @@ import processImg from "@/assets/png/process.png";
 import router from "@/router";
 import { TipWarning } from "@/util/messageUtil";
 import { Button, Image } from "ant-design-vue";
-import { defineComponent, KeepAlive, ref, Transition } from "vue";
+import { defineComponent, KeepAlive, provide, ref, Transition } from "vue";
 import { RouterView } from "vue-router";
 import styled from "vue3-styled-components";
 
@@ -234,10 +234,16 @@ export default defineComponent({
 
     const startAction = () => {
       if (currentCom.value) {
-        return (currentCom.value as any).executeAction();
+        (currentCom.value as any).executeAction();
+        scan.value = true;
       }
-      return false;
     };
+
+    const stopScan = (val: boolean) => {
+      scan.value = val;
+    };
+
+    provide("stopScan", stopScan);
 
     const scan = ref(false);
 
@@ -294,13 +300,7 @@ export default defineComponent({
                 TipWarning("正在扫描中，请稍后");
                 return;
               }
-              scan.value = startAction();
-              const timer = setInterval(() => {
-                scan.value = startAction();
-                if (!scan.value) {
-                  clearInterval(timer);
-                }
-              }, 5000);
+              startAction();
             }}
           >
             {"扫描"}
