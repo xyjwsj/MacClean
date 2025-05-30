@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/MacClean.iml" filepath="$PROJECT_DIR$/.idea/MacClean.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MacClean.iml" filepath="$PROJECT_DIR$/MacClean.iml" />
     </modules>
   </component>
 </project>

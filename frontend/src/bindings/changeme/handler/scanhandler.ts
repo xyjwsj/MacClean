@@ -5,7 +5,7 @@
 // @ts-ignore: Unused imports
 import {Call as $Call, Create as $Create} from "@wailsio/runtime";
 
-export function Scan(key: string): Promise<boolean> & { cancel(): void } {
+export function Scan(key: string): Promise<string> & { cancel(): void } {
     let $resultPromise = $Call.ByID(2957224028, key) as any;
     return $resultPromise;
 }
