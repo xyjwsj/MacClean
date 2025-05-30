@@ -37,7 +37,7 @@ export default defineComponent({
       height: ${() => `${props.width}px`};
       width: ${() => `${props.width}px`};
       .imageCard {
-        border-radius: 50px;
+        border-radius: ${() => props.width > 150 ? `55px` : '20px'};
         height: ${() => `${props.width}px`};
         /* display: flex;
         align-items: center;
@@ -55,7 +55,7 @@ export default defineComponent({
         //transition-duration: 80ms;
         .img {
           box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0.1);
-          border-radius: 50px;
+          border-radius: ${() => props.width > 150 ? `55px` : '20px'};
           opacity: 0.8;
           background-size: cover;
         }

@@ -7,6 +7,7 @@ import { Scan } from "@/bindings/changeme/handler/scanhandler.ts";
 import { Events } from "@wailsio/runtime";
 import { defineComponent, inject, onUnmounted, reactive } from "vue";
 import styled from "vue3-styled-components";
+import RotateImage from "@/components/rotateImage.tsx";
 
 export default defineComponent({
   name: "Dashboard",
@@ -71,7 +72,7 @@ export default defineComponent({
                 width: 300%;
                 height: 300%;
                 position: absolute;
-                z-index: -2;
+                z-index: -3;
                 top: -100%;
                 left: -100%;
                 background: conic-gradient(
@@ -87,14 +88,14 @@ export default defineComponent({
             .title {
               color: #fafafa;
               width: 100%;
-              height: 20%;
-              line-height: 20%;
+              //height: 20%;
+              //line-height: 20%;
               /* background-color: yellow; */
             }
 
             .runTip {
               width: 100%;
-              height: 80%;
+              height: 100%;
               color: wheat;
               text-align: center;
               display: flex;
@@ -102,29 +103,31 @@ export default defineComponent({
               justify-content: flex-end;
               align-items: center;
               transition: all 1s;
+              gap: 5px;
 
+              .idxImg {
+                position: absolute;
+                top: 55px;
+                max-width: 150px;
+              }
+              
               .title {
                 width: 100%;
-                height: 100px;
-                line-height: 100px;
                 font-size: 32px;
               }
 
               .content {
-                width: 350px;
-                /* width: 100%; */
-                height: 80px;
+                max-width: 200px;
+                max-height: 50px;
                 font-size: 19px;
-                line-height: 80px;
+                //line-height: 30px;
                 overflow: hidden;
               }
 
               .desc {
-                width: 100%;
-                height: 55px;
+                width: 100px;
                 font-size: 15px;
                 color: lightgray;
-                line-height: 55px;
               }
             }
 
@@ -137,15 +140,17 @@ export default defineComponent({
               .body {
                 color: white;
                 font-size: 32px;
-                width: 100%;
+                max-width: 150px;
+                max-height: 45px;
                 font-weight: 700;
                 height: 60px;
                 overflow: hidden;
               }
 
               .footer {
-                width: 100%;
-                height: 10%;
+                max-width: 80px;
+                //height: 10%;
+                max-height: 15px;
                 color: lightgray;
                 /* background-color: green; */
               }
@@ -254,8 +259,8 @@ export default defineComponent({
       cardData.forEach((item) => {
         item.data.forEach((itm) => {
           if (itm.key === newKey) {
-            itm.flexGrow = 4;
-            item.flexGrow = 4;
+            itm.flexGrow = 3;
+            item.flexGrow = 2;
           } else if (itm.key === oldKey) {
             itm.flexGrow = 1;
             item.flexGrow = 1;
@@ -298,7 +303,7 @@ export default defineComponent({
     const scan = reactive({
       status: false,
       finish: false,
-      desc: "aaa",
+      desc: "aafsadfasdffasdfdfasdfasdfadsfadsfadsfadsfadsfasdfadsfadsfaa这样可以确保即使内容较多，.an-item 也会保持在分配的空间内，而不是无限制地撑大",
     });
 
     return () => (
@@ -328,6 +333,7 @@ export default defineComponent({
                       <div class={"title"}>{col.title}</div>
                       {col.flexGrow > 1 && (
                         <div class={"runTip"}>
+                          <RotateImage class={'idxImg'} icon={col.icon} width={100} auto={true}></RotateImage>
                           <div class={"title"}>{"TITLE"}</div>
                           <div class={"content"}>{scan.desc}</div>
                           <div class={"desc"}>{"DESC"}</div>
