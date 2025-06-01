@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"testing"
 )
 
@@ -33,4 +34,25 @@ func TestDir(t *testing.T) {
 		path := util.CreatePlatformPath(info.ParentPath, info.Name)
 		log.Println(path, info.Dir, info.Size)
 	})
+}
+
+func TestBigfileMD5(t *testing.T) {
+	goroutine, err := util.FileMd5Goroutine("/Users/wushaojie/Documents/software/Animate24.0.2.dmg")
+	if err != nil {
+		log.Panic(err)
+	}
+	log.Println("文件Md5:" + goroutine)
+}
+
+func TestDuplicateFile(t *testing.T) {
+	file, err := service.DuplicateFile()
+	if err != nil {
+		log.Panic(err)
+	}
+	num := 0
+	for _, item := range file {
+		num += len(item)
+	}
+	log.Println("重复文件个数：" + strconv.Itoa(num))
+	log.Println(file)
 }
