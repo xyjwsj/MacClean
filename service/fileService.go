@@ -79,8 +79,13 @@ type FileIdx struct {
 	Index int
 }
 
-func DuplicateFile() ([][]FileIdx, error) {
-	duplicate := make([][]FileIdx, 0)
+type SameFile struct {
+	Md5   string
+	Paths []string
+}
+
+func DuplicateFile() ([]SameFile, error) {
+	duplicate := make([]SameFile, 0)
 	dir := model.UserHomeDir
 	file, err := util.SameSizeFile(5, filepath.Join(dir, "Documents"),
 		filepath.Join(dir, "Downloads"),
@@ -142,20 +147,31 @@ func DuplicateFile() ([][]FileIdx, error) {
 				idxes = append(idxes, res)
 			}
 
-			fileIdxes := make([]FileIdx, 0)
+			data := make(map[string]int)
 
-			for idx, item := range idxes {
-				if idx >= len(idxes)-1 {
-					continue
-				}
-				for _, itm := range idxes[idx+1:] {
-					if item.Md5 == itm.Md5 {
-						fileIdxes = append(fileIdxes, itm)
-					}
+			for _, itm := range idxes {
+				if _, ok := data[itm.Md5]; ok {
+					data[itm.Md5] += 1
+				} else {
+					data[itm.Md5] = 1
 				}
 			}
-			if len(fileIdxes) > 0 {
-				duplicate = append(duplicate, fileIdxes)
+
+			for md5, num := range data {
+				if num > 1 {
+					paths := make([]string, 0)
+					for _, itm := range idxes {
+						if itm.Md5 == md5 {
+							paths = append(paths, itm.Path)
+						}
+					}
+					if len(paths) > 0 {
+						duplicate = append(duplicate, SameFile{
+							Md5:   md5,
+							Paths: paths,
+						})
+					}
+				}
 			}
 		}
 	}

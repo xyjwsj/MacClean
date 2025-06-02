@@ -49,10 +49,15 @@ func TestDuplicateFile(t *testing.T) {
 	if err != nil {
 		log.Panic(err)
 	}
-	num := 0
-	for _, item := range file {
-		num += len(item)
+
+	for idx, itm := range file {
+		log.Printf("相同文件%d，路径%s", idx, itm.Paths)
 	}
-	log.Println("重复文件个数：" + strconv.Itoa(num))
+
+	log.Println("重复文件个数：" + strconv.Itoa(len(file)))
 	log.Println(file)
+}
+
+func TestShell(t *testing.T) {
+	util.Shell("ps", "aux")
 }
