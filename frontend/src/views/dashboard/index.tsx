@@ -290,6 +290,8 @@ export default defineComponent({
                     } else if (itm.key === oldKey) {
                         itm.flexGrow = 1;
                         item.flexGrow = 1;
+                        resInfo.app = "扫描中"
+                        resInfo.size= '统计中'
                         itm.finish = true;
                     } else {
                         itm.flexGrow = 1;

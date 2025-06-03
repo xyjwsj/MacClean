@@ -84,7 +84,9 @@ type SameFile struct {
 	Paths []string
 }
 
-func DuplicateFile() ([]SameFile, error) {
+type SameCall func(file SameFile)
+
+func DuplicateFile(call SameCall) ([]SameFile, error) {
 	duplicate := make([]SameFile, 0)
 	dir := model.UserHomeDir
 	file, err := util.SameSizeFile(5, filepath.Join(dir, "Documents"),
@@ -166,10 +168,12 @@ func DuplicateFile() ([]SameFile, error) {
 						}
 					}
 					if len(paths) > 0 {
-						duplicate = append(duplicate, SameFile{
+						sameFile := SameFile{
 							Md5:   md5,
 							Paths: paths,
-						})
+						}
+						duplicate = append(duplicate, sameFile)
+						call(sameFile)
 					}
 				}
 			}

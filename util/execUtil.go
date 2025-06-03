@@ -16,7 +16,7 @@ type ShellResult struct {
 	Application string `json:"application"`
 }
 
-func Shell(shell string, params ...string) {
+func Shell(shell string, params ...string) ([]ShellResult, error) {
 	cmd := exec.Command(shell, params...)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout // 标准输出
@@ -37,7 +37,19 @@ func Shell(shell string, params ...string) {
 		re := regexp.MustCompile(`/Applications/([^/]+)`)
 		match := re.FindStringSubmatch(info[10])
 		if len(match) > 0 {
-			application = match[len(match)-1] + ".app"
+			application = match[len(match)-1]
+		}
+
+		re = regexp.MustCompile(`/(PrivateFrameworks|Frameworks)/([^/]+)`)
+		match = re.FindStringSubmatch(info[10])
+		if len(match) > 0 {
+			application = match[len(match)-1]
+		}
+
+		re = regexp.MustCompile(`/Frameworks/([^/]+)`)
+		match = re.FindStringSubmatch(info[10])
+		if len(match) > 0 {
+			application = match[len(match)-1]
 		}
 
 		results = append(results, ShellResult{
@@ -51,5 +63,6 @@ func Shell(shell string, params ...string) {
 	if err != nil {
 		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
-	log.Println(results)
+	//log.Println(Struct2Json(results))
+	return results, err
 }
