@@ -1,5 +1,7 @@
 import cache3dIcon from "@/assets/png/cache-3d.png";
 import RotateImage from "@/components/rotateImage";
+import { FolderOutlined } from "@ant-design/icons-vue";
+import { Progress } from "ant-design-vue";
 import { defineComponent, inject, reactive, ref, Transition } from "vue";
 import styled from "vue3-styled-components";
 
@@ -54,41 +56,67 @@ export default defineComponent({
 
         .rotateImg {
           left: 50%;
-          top: 30px;
+          top: 50px;
           transform: translate(-50%);
           transition: transform 0.8s;
           position: absolute;
         }
 
         .rotateImgStart {
-          transform: translate(-320px, 100px);
+          transform: translate(-300px, 100px);
           transition: transform 0.8s;
         }
 
         .description {
+          position: absolute;
           width: 100%;
           text-align: center;
+          bottom: 20%;
+          font-size: 25px;
+          color: lightgray;
         }
       }
     `;
 
     const ListView = styled.div`
-      width: 60%;
+      width: 50%;
       height: 75%;
-      color: white;
+      /* background-color: rgba(255, 255, 255, 0.05); */
+      border-radius: 15px;
       margin-right: 10px;
-      position: relative;
-
+      padding: 10px;
+      /* position: relative; */
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
       .item {
-        line-height: 40px;
-        color: white;
         width: 100%;
+        height: 50px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        .text {
+          width: 50%;
+        }
+        .size {
+          width: 10%;
+          font-size: 12px;
+        }
+      }
+
+      .itemSelect {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
       }
     `;
 
     const scan = reactive({
       status: false,
       num: 0,
+      size: "",
     });
 
     const stopScan: any = inject("stopScan");
@@ -100,6 +128,7 @@ export default defineComponent({
           scan.status = false;
           scan.num++;
           stopScan(false);
+          scan.size = "缓存垃圾1.6GB";
         }, 5000);
       }
       return scan.status;
@@ -128,16 +157,30 @@ export default defineComponent({
           <Transition name="slide-right" mode="out-in">
             {!scan.status && (
               <div key={"desc"} class={"description"}>
-                {"欢迎使用缓存清理功能"}
+                {scan.size === "" ? "欢迎使用缓存清理功能" : scan.size}
               </div>
             )}
             {scan.status && (
               <ListView key={"data"} class={"listView"}>
                 {data.value.map((item, idx) => {
                   return (
-                    <span key={idx} class={"item"}>
-                      {item}
-                    </span>
+                    <div
+                      key={idx}
+                      class={[
+                        "item",
+                        idx === data.value.length - 1 ? "itemSelect" : "",
+                      ]}
+                    >
+                      <FolderOutlined />
+                      <span class={"text"}>{"Google"}</span>
+                      <span class={"size"}>{"100MB"}</span>
+                      <Progress
+                        type="dashboard"
+                        size={20}
+                        strokeColor={"white"}
+                        trailColor={"white"}
+                      />
+                    </div>
                   );
                 })}
               </ListView>

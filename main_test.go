@@ -45,7 +45,7 @@ func TestBigfileMD5(t *testing.T) {
 }
 
 func TestDuplicateFile(t *testing.T) {
-	file, err := service.DuplicateFile()
+	file, err := service.DuplicateFile(nil)
 	if err != nil {
 		log.Panic(err)
 	}
