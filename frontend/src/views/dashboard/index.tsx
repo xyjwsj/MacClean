@@ -1,4 +1,3 @@
-import appstore3dIcon from "@/assets/png/appstore-3d.png";
 import bigfile3dIcon from "@/assets/png/bigfile-3d.png";
 import cache3dIcon from "@/assets/png/cache-3d.png";
 import duplicate3dIcon from "@/assets/png/duplicate-3d.png";
@@ -42,7 +41,8 @@ export default defineComponent({
                         padding: 20px;
                         border-radius: 20px;
                         /* 玻璃核心样式 */
-                        flex-grow: 1;
+                        //flex-grow: 1;
+                        flex: 1;
                         transition: flex-grow 0.5s;
                         position: relative;
                         overflow: hidden;
@@ -61,7 +61,7 @@ export default defineComponent({
                             left: 0;
                             opacity: 0.1;
                             transition: all 1s;
-                            /* z-index: -1; */
+                            //z-index: -1;
                             overflow: hidden;
                         }
 
@@ -203,13 +203,13 @@ export default defineComponent({
                         icon: process3dIcon,
                         finish: false,
                     },
-                    {
-                        key: "application",
-                        flexGrow: 1,
-                        title: "应用",
-                        icon: appstore3dIcon,
-                        finish: false,
-                    },
+                    // {
+                    //     key: "application",
+                    //     flexGrow: 1,
+                    //     title: "应用",
+                    //     icon: appstore3dIcon,
+                    //     finish: false,
+                    // },
                 ],
             },
             {
@@ -238,16 +238,20 @@ export default defineComponent({
             {
                 key: "cache",
                 size: ""
-            }, {
+            },
+            {
                 key: "process",
                 size: ""
-            }, {
-                key: "application",
-                size: ""
-            }, {
+            },
+            // {
+            //     key: "application",
+            //     size: ""
+            // },
+            {
                 key: "bigFile",
                 size: ""
-            }, {
+            },
+            {
                 key: "duplicate",
                 size: ""
             }
@@ -274,7 +278,7 @@ export default defineComponent({
             startScan(items.length);
             scan.status = false;
             scan.finish = true;
-            stopScan(false);
+            finishScan()
         };
 
         const startScan = (idx: number) => {
@@ -291,7 +295,7 @@ export default defineComponent({
                         itm.flexGrow = 1;
                         item.flexGrow = 1;
                         resInfo.app = "扫描中"
-                        resInfo.size= '统计中'
+                        resInfo.size = '统计中'
                         itm.finish = true;
                     } else {
                         itm.flexGrow = 1;
@@ -327,7 +331,7 @@ export default defineComponent({
 
         expose({executeAction});
 
-        const stopScan: any = inject("stopScan");
+        const finishScan: any = inject("finishScan");
 
         const resInfo = reactive({
             app: '',

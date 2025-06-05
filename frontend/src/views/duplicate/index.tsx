@@ -1,9 +1,10 @@
 import duplicate3dIcon from "@/assets/png/duplicate-3d.png";
 import RotateImage from "@/components/rotateImage";
 import {FolderOutlined} from "@ant-design/icons-vue";
-import {Progress} from "ant-design-vue";
-import {defineComponent, inject, reactive, ref, Transition} from "vue";
+import {defineComponent, inject, reactive, Transition} from "vue";
 import styled from "vue3-styled-components";
+import {Events} from "@wailsio/runtime";
+import {Scan} from "@/bindings/changeme/handler/scanhandler.ts";
 
 export default defineComponent({
     name: "Cache",
@@ -92,6 +93,11 @@ export default defineComponent({
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            overflow-y: auto;
+
+            ::-webkit-scrollbar {
+                display: none;
+            }
 
             .item {
                 width: 100%;
@@ -102,7 +108,11 @@ export default defineComponent({
                 align-items: center;
 
                 .text {
+                    height: 50px;
                     width: 50%;
+                    line-height: 50px;
+                    white-space: nowrap;
+                    overflow-x: hidden;
                 }
 
                 .size {
@@ -112,8 +122,24 @@ export default defineComponent({
             }
 
             .itemSelect {
-                background-color: rgba(255, 255, 255, 0.05);
                 border-radius: 10px;
+                background-image: linear-gradient(
+                        to right,
+                        transparent 0%,
+                        rgba(255, 255, 255, 0.2) 50%,
+                        transparent 100%
+                );
+                background-size: 200% 100%;
+                animation: marquee 3s linear infinite;
+            }
+
+            @keyframes marquee {
+                0% {
+                    background-position: 100% 0;
+                }
+                100% {
+                    background-position: -100% 0;
+                }
             }
         `;
 
@@ -122,31 +148,43 @@ export default defineComponent({
             num: 0,
             size: "",
         });
+        const start = async () => {
+            console.log("==========", scan.status);
+            const result = await Scan("duplicate");
+            Events.Off('scanEvent')
+            scan.size = result
+            scan.status = false
+            finishScan()
+        }
 
-        const stopScan: any = inject("stopScan");
+        const finishScan: any = inject("finishScan");
 
         const executeAction = () => {
             if (!scan.status) {
                 scan.status = true;
-                setTimeout(() => {
-                    scan.status = false;
-                    scan.num++;
-                    stopScan(false);
-                    scan.size = "重复文件总计24个";
-                }, 5000);
+                Events.On("scanEvent", (data: any) => {
+                    requestAnimationFrame(() => {
+
+                        const app = data.data[0].app;
+                        const size = data.data[0].size;
+
+                        dataInfo.unshift({
+                            app: app,
+                            size: size
+                        })
+                    })
+                });
+                start()
             }
             return scan.status;
         };
 
         expose({executeAction});
 
-        const data = ref<string[]>([
-            "Racing car sprays burning fuel into crowd.",
-            "Japanese princess to wed commoner.",
-            "Australian walks 100km after outback crash.",
-            "Man charged over missing wedding girl.",
-            "Los Angeles battles huge wildfires.",
-        ]);
+        const dataInfo = reactive([{
+            app: '',
+            size: ''
+        }]);
 
         return () => (
             <Container>
@@ -166,24 +204,18 @@ export default defineComponent({
                         )}
                         {scan.status && (
                             <ListView key={"data"} class={"listView"}>
-                                {data.value.map((_, idx) => {
+                                {dataInfo.map((itm, idx) => {
                                     return (
                                         <div
                                             key={idx}
                                             class={[
                                                 "item",
-                                                idx === data.value.length - 1 ? "itemSelect" : "",
+                                                idx === dataInfo.length - 1 ? "itemSelect" : "",
                                             ]}
                                         >
                                             <FolderOutlined/>
-                                            <span class={"text"}>{"Google"}</span>
-                                            <span class={"size"}>{"100MB"}</span>
-                                            <Progress
-                                                type="dashboard"
-                                                size={20}
-                                                strokeColor={"white"}
-                                                trailColor={"white"}
-                                            />
+                                            <span class={"text"}>{itm.app}</span>
+                                            <span class={"size"}>{itm.size}</span>
                                         </div>
                                     );
                                 })}

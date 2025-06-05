@@ -1,14 +1,13 @@
-import applicationImg from "@/assets/png/application.png";
 import bigFileImg from "@/assets/png/bigFile.png";
 import cacheImg from "@/assets/png/cache.png";
 import dashboardImg from "@/assets/png/dashboard.png";
 import duplicateImg from "@/assets/png/duplicate.png";
 import processImg from "@/assets/png/process.png";
 import router from "@/router";
-import { TipWarning } from "@/util/messageUtil";
-import { Button, Image } from "ant-design-vue";
-import { defineComponent, KeepAlive, provide, ref, Transition } from "vue";
-import { RouterView } from "vue-router";
+import {TipWarning} from "@/util/messageUtil";
+import {Button, Image} from "ant-design-vue";
+import {defineComponent, KeepAlive, provide, ref, Transition} from "vue";
+import {RouterView} from "vue-router";
 import styled from "vue3-styled-components";
 
 export default defineComponent({
@@ -112,7 +111,7 @@ export default defineComponent({
         }
       }
 
-      .startAnimation {
+      .startPre {
         &:after {
           content: "";
           display: block;
@@ -127,7 +126,6 @@ export default defineComponent({
             rgba(212, 214, 240, 0.9)
           );
           transform-origin: center center;
-          animation: loader 3s linear infinite;
         }
         &:before {
           content: "";
@@ -138,6 +136,12 @@ export default defineComponent({
           background: orange;
           //background: rgba(212, 214, 240, .8);
           border-radius: inherit;
+        }
+      }
+      
+      .rotateScan {
+        &:after {
+          animation: loader 3s linear infinite;
         }
       }
 
@@ -200,13 +204,13 @@ export default defineComponent({
         description: "进程",
         router: "Process",
       },
-      {
-        key: "application",
-        width: 45,
-        img: applicationImg,
-        description: "应用",
-        router: "Application",
-      },
+      // {
+      //   key: "application",
+      //   width: 45,
+      //   img: applicationImg,
+      //   description: "应用",
+      //   router: "Application",
+      // },
       {
         key: "bigFile",
         width: 30,
@@ -235,17 +239,24 @@ export default defineComponent({
     const startAction = () => {
       if (currentCom.value) {
         (currentCom.value as any).executeAction();
-        scan.value = true;
+        scan.value = 1;
       }
     };
 
-    const stopScan = (val: boolean) => {
-      scan.value = val;
+    const finishScan = () => {
+      scan.value = 2
+      cleanDes.value = "清理"
+    }
+
+    const stopScan = () => {
+      scan.value = 0;
     };
 
     provide("stopScan", stopScan);
+    provide("finishScan", finishScan);
 
-    const scan = ref(false);
+    const scan = ref(0);
+    const cleanDes = ref("扫描")
 
     return () => (
       <Container>
@@ -294,16 +305,24 @@ export default defineComponent({
             />
           </div>
           <div
-            class={["start", scan.value ? "startAnimation" : ""]}
+            class={["start", scan.value > 0 ? "startPre" : "", scan.value === 1 ? 'rotateScan' : '']}
             onClick={() => {
-              if (scan.value) {
+              if (scan.value === 1) {
                 TipWarning("正在扫描中，请稍后");
+                return;
+              }
+              if (scan.value === 2) {
+                setTimeout(() => {
+                  scan.value = 0
+                  cleanDes.value = "扫描"
+                }, 5000)
+                scan.value = 1
                 return;
               }
               startAction();
             }}
           >
-            {"扫描"}
+            {cleanDes.value}
           </div>
         </RouterViewCon>
       </Container>
