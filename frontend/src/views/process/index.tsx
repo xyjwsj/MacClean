@@ -1,8 +1,8 @@
 import process3DIcon from "@/assets/png/process-3d.png";
 import RotateImage from "@/components/rotateImage";
-import { FolderOutlined } from "@ant-design/icons-vue";
-import { Progress } from "ant-design-vue";
-import { defineComponent, inject, reactive, ref, Transition } from "vue";
+import {FolderOutlined} from "@ant-design/icons-vue";
+import {Progress} from "ant-design-vue";
+import {defineComponent, inject, reactive, ref, Transition} from "vue";
 import styled from "vue3-styled-components";
 
 export default defineComponent({
@@ -162,7 +162,7 @@ export default defineComponent({
             )}
             {scan.status && (
               <ListView key={"data"} class={"listView"}>
-                {data.value.map((item, idx) => {
+                {data.value.map((_, idx) => {
                   return (
                     <div
                       key={idx}

@@ -9,6 +9,12 @@ import (
 	"time"
 )
 
+var apps = map[string]string{
+	"Google":   "Chrome",
+	"Quark":    "Default",
+	"Homebrew": "Backup",
+}
+
 type ScanHandler struct {
 }
 
@@ -16,20 +22,29 @@ func (handler *ScanHandler) Scan(key string) string {
 	log.Println(key)
 	switch key {
 	case "cache":
-		num := 0
-		size := int64(0)
-		cache := service.ScanCache(func(info model.FInfo) {
-			num++
-			size += info.Size
-			if num%10 != 0 {
-				return
-			}
+		cacheRes := int64(0)
+		second := time.Now().UnixMilli()
+		for dir, app := range apps {
+			size := int64(0)
+			cache := service.ScanCache(func(info model.FInfo) {
+				size += info.Size
+				if time.Now().UnixMilli()-second < 1000 {
+					second = time.Now().UnixMilli()
+					return
+				}
+				model.FetchAppInfo().App.EmitEvent("scanEvent", map[string]string{
+					"app":  app,
+					"size": util.FileSizeCovert(size),
+				})
+				log.Println(app + "-size=" + util.FileSizeCovert(size))
+			}, dir, app)
 			model.FetchAppInfo().App.EmitEvent("scanEvent", map[string]string{
-				"app":  "Chrome",
-				"size": util.FileSizeCovert(size),
+				"app":  app,
+				"size": util.FileSizeCovert(cache.Size),
 			})
-		}, "Google", "Chrome")
-		return util.FileSizeCovert(cache.Size)
+			cacheRes += cache.Size
+		}
+		return util.FileSizeCovert(cacheRes)
 	case "bigFile":
 		num := 0
 		size := 0
